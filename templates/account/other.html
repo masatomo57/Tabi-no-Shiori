@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+<!-- コンテンツ -->
+{% block content %}
+<div class='container'>
+  <div class="col-md-6 offset-md-3">
+    <div class='card mt-3 mb-3 bg-light'>
+      <!-- カードヘッダー -->
+      <div class='card-header bg-primary text-light'>
+        <h4>他のユーザー</h4>
+      </div>
+      <!-- カードボディー -->
+      <div class='card-body'>
+        <h1>情報</h1>
+            {% for user in users %}
+                <h2>{{user.username}}</h2>
+                <p>連絡先：{{user.email}}</p>
+            {% endfor %}
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container">
+        <div class="col-md-6 offset-md-3">
+            <div class="card mt-3 mb-3 bg-light">
+                <div class="card-header bg-primary text-light">
+                    <h1>ログイン</h1>
+                </div>
+                <div class="card-body">
+                    <form action="{% url 'account:login' %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <p><input type="hidden" name="next" value="{{ next }}"></p>
+                        <p><input type="submit" value="ログイン"></p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

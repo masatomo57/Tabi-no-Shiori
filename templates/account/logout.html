@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+<!-- コンテンツ -->
+{% block content %}
+<div class='container'>
+  <div class="col-md-6 offset-md-3">
+    <div class='card mt-3 mb-3 bg-light'>
+      <!-- カードヘッダー -->
+      <div class='card-header bg-primary text-light'>
+        <h4>ログアウト</h4>
+      </div>
+      <!-- カードボディー -->
+      <div class='card-body'>
+        <p>ログアウトしました。</p>
+        <hr class='mt-2 mb-2'>
+        <p><a href="{% url 'account:login' %}">ログイン</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
