@@ -5,4 +5,5 @@ app_name = 'tabinoshiori'
 
 urlpatterns = [
     path('home/', views.MyHome.as_view(), name='home'),
+    path('register/trip/', views.MyRegisterTrip.as_view(), name='registertrip'),
 ]
