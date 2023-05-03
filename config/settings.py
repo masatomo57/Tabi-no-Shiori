@@ -133,4 +133,4 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',]
 
 # 追加
 LOGIN_URL = 'account:login' # ログインのURLの設定
-LOGIN_REDIRECT_URL = 'account:user' #ログインが完了した後に遷移するURL
+LOGIN_REDIRECT_URL = 'tabinoshiori:home' #ログインが完了した後に遷移するURL

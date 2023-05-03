@@ -9,7 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class MySignup(CreateView):
     template_name = 'account/signup.html'
     form_class = SignupForm
-    success_url = 'account:user'
+    success_url = '/account/login/'
     
     def form_valid(self, form):
         result = super().form_valid(form)
