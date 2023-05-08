@@ -11,7 +11,7 @@ class Trip(models.Model):
     comment = models.TextField(verbose_name='コメント')
     is_public = models.BooleanField(verbose_name="公開の可不可")
     def __str__(self):
-        return self.name
+        return self.title
     
 class Itinerary(models.Model):
     title = models.ForeignKey(Trip, on_delete=models.CASCADE, verbose_name="旅行タイトル", related_name="title_itinerary")

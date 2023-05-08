@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+<!-- コンテンツ -->
+{% block content %}
+<div class='container'>
+  <div class="col-md-6 offset-md-3">
+    <div class='card mt-3 mb-3 bg-light'>
+      <!-- カードヘッダー -->
+      <div class='card-header bg-primary text-light'>
+        <h4>{{ trip.title }}</h4>
+      </div>
+      <!-- カードボディー -->
+      <div class='card-body'>
+        <table>
+          <thead>
+            <td>
+              日付
+            </td>
+            <td>
+              開始時間
+            </td>
+            <td>
+              終了時間
+            </td>
+            <td>
+              行動
+            </td>
+          </thead>
+          {% for itinerary in trip.title_itinerary.all %}
+          <tr>
+            <td>
+              {{ itinerary.date }}
+            </td>
+            <td>
+              {{ itinerary.start_time }}
+            </td>
+            <td>
+              {{ itinerary.end_time }}
+            </td>
+            <td>
+              {{ itinerary.action }}
+            </td>
+          </tr>
+          {% endfor %}
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
