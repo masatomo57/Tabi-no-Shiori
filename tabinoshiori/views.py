@@ -1,5 +1,5 @@
 from typing import Any, Dict
-from django.forms.models import BaseModelForm
+from django.forms.models import BaseModelForm, modelformset_factory
 from django.http import HttpResponse
 from django.views.generic import TemplateView, CreateView, DetailView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -7,6 +7,8 @@ from tabinoshiori.models import Trip, Itinerary
 from tabinoshiori.forms import TripForm, ItineraryForm
 from django.urls import reverse, reverse_lazy
 from django.shortcuts import get_object_or_404
+from django.db import transaction
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
@@ -42,6 +44,25 @@ class MyRegisterTrip(LoginRequiredMixin, CreateView):
         form.instance.username = self.request.user
         return super().form_valid(form)
 
+@login_required
+def MyRegisterItinerary(request):
+    template_name = 'tabinoshiori/registeritinerary.html'
+    
+    # フォームセット定義
+    MyFormSet = modelformset_factory(
+        model=Itinerary,
+        form=ItineraryForm,
+        extra=3
+        max_num=3
+    )
+    
+    if request.method=='POST':
+        return 
+    else:
+        return
+    
+
+'''
 class MyRegisterItinerary(LoginRequiredMixin, CreateView):
     model = Itinerary
     form_class = ItineraryForm
@@ -56,3 +77,4 @@ class MyRegisterItinerary(LoginRequiredMixin, CreateView):
         return context
     def get_success_url(self):
         return reverse('tabinoshiori:itinerary', kwargs={'pk': self.kwargs.get('pk')})
+'''
