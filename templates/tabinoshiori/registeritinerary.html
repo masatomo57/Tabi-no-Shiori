@@ -12,9 +12,30 @@
       <!-- カードボディー -->
       <div class='card-body'>
         <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
+          <div>
+            <table>
+              <tr>
+                <th>行動</th>
+                <th>日付</th>
+                <th>時間</th>
+              </tr>
+              <tr>
+                {% csrf_token %}
+                <td>
+                  {{ form.action }}
+                </td>
+                <td>
+                  {{ form.date }}
+                </td>
+                <td>
+                  {{ form.start_time }} ~ {{ form.end_time }}
+                </td>
+              </tr>
+            </table>
+          </div>
+          <div>
             <button type="submit">登録</button>
+          </div>
         </form>
       </div>
     </div>
