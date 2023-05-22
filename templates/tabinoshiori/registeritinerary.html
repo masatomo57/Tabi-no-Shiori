@@ -13,6 +13,14 @@
       <div class='card-body'>
         <form method="POST">
           <div>
+            {% csrf_token %}
+            
+            {% for form in form_set %}
+            <div>
+              {{ form }}
+            </div>
+            {% endfor %}
+            <!--
             <table>
               <tr>
                 <th>行動</th>
@@ -32,11 +40,17 @@
                 </td>
               </tr>
             </table>
+            -->
           </div>
+          {{ form_set.management_form }}
+          <!--上のmanagement_formはformset使う時は絶対必要！-->
           <div>
             <button type="submit">登録</button>
           </div>
         </form>
+        <h3>
+          {{ message }}
+        </h3>
       </div>
     </div>
   </div>

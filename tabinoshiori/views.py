@@ -6,7 +6,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from tabinoshiori.models import Trip, Itinerary
 from tabinoshiori.forms import TripForm, ItineraryForm
 from django.urls import reverse, reverse_lazy
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect, render
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
@@ -45,21 +45,44 @@ class MyRegisterTrip(LoginRequiredMixin, CreateView):
         return super().form_valid(form)
 
 @login_required
-def MyRegisterItinerary(request):
+def MyRegisterItinerary(request, pk):
     template_name = 'tabinoshiori/registeritinerary.html'
     
     # フォームセット定義
     MyFormSet = modelformset_factory(
         model=Itinerary,
         form=ItineraryForm,
-        extra=3
-        max_num=3
+        extra=2,
     )
     
     if request.method=='POST':
-        return 
-    else:
-        return
+        form_set = MyFormSet(request.POST)
+        if form_set.is_valid():
+            with transaction.atomic():
+                for form in form_set:
+                    itinerary = form.save(commit=False)
+                    itinerary.title = get_object_or_404(Trip, pk=pk)
+                    itinerary.username = request.user
+                    itinerary.save()
+            return redirect('tabinoshiori:itinerary', pk=pk)
+        
+        else:
+            context = {
+                "form_set": form_set,
+                "title": get_object_or_404(Trip, pk=pk),
+                "message": form_set.non_form_errors,
+            }
+            return render(request, "tabinoshiori/registeritinerary.html", context)
+        
+    elif request.method=='GET':
+        form_set = MyFormSet(queryset=Itinerary.objects.none())
+        context = {
+            "form_set": form_set,
+            "title": get_object_or_404(Trip, pk=pk)
+        }
+        
+        return render(request, "tabinoshiori/registeritinerary.html", context)
+    
     
 
 '''
