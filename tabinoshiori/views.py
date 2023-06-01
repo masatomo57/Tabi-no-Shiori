@@ -1,7 +1,8 @@
 from typing import Any, Dict
-from django.forms.models import BaseModelForm, modelformset_factory
+from django.forms import formset_factory
+from django.forms.models import BaseModelForm, modelformset_factory, inlineformset_factory
 from django.http import HttpResponse
-from django.views.generic import TemplateView, CreateView, DetailView
+from django.views.generic import TemplateView, CreateView, DetailView, FormView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from tabinoshiori.models import Trip, Itinerary
 from tabinoshiori.forms import TripForm, ItineraryForm
@@ -44,9 +45,25 @@ class MyRegisterTrip(LoginRequiredMixin, CreateView):
         form.instance.username = self.request.user
         return super().form_valid(form)
 
+'''
+class MyRegisterItinerary(FormView, LoginRequiredMixin):
+    template_name="tabinoshiori/registeritinerary.html"
+    ItineraryFormSet = formset_factory(
+        model=Itinerary,
+        form=ItineraryForm,
+        extra=1,
+    )
+    form_class = ItineraryFormSet
+    
+    def get_success_url(self):
+        return reverse('tabinoshiori:itinerary', kwargs={'pk': self.kwargs.get('pk')})
+'''
+
+
 @login_required
 def MyRegisterItinerary(request, pk):
     template_name = 'tabinoshiori/registeritinerary.html'
+    
     
     # フォームセット定義
     MyFormSet = modelformset_factory(
@@ -78,12 +95,13 @@ def MyRegisterItinerary(request, pk):
         form_set = MyFormSet(queryset=Itinerary.objects.none())
         context = {
             "form_set": form_set,
+            "extra_form": ItineraryForm,
             "title": get_object_or_404(Trip, pk=pk)
         }
         
         return render(request, "tabinoshiori/registeritinerary.html", context)
-    
-    
+
+
 
 '''
 class MyRegisterItinerary(LoginRequiredMixin, CreateView):

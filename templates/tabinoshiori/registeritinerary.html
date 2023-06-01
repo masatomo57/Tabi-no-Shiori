@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 <!-- コンテンツ -->
 {% block content %}
@@ -14,19 +15,13 @@
         <form method="POST">
           <div>
             {% csrf_token %}
-            
-            {% for form in form_set %}
-            <div>
-              {{ form }}
-            </div>
-            {% endfor %}
-            <!--
-            <table>
+            <table id="form_table">
               <tr>
                 <th>行動</th>
                 <th>日付</th>
                 <th>時間</th>
               </tr>
+              {% for form in form_set %}
               <tr>
                 {% csrf_token %}
                 <td>
@@ -36,11 +31,11 @@
                   {{ form.date }}
                 </td>
                 <td>
-                  {{ form.start_time }} ~ {{ form.end_time }}
+                  {{ form.start_time }}{{ form.end_time }}
                 </td>
               </tr>
+              {% endfor %}
             </table>
-            -->
           </div>
           {{ form_set.management_form }}
           <!--上のmanagement_formはformset使う時は絶対必要！-->
@@ -48,6 +43,7 @@
             <button type="submit">登録</button>
           </div>
         </form>
+        <button id="add"> + </button>
         <h3>
           {{ message }}
         </h3>
@@ -55,4 +51,47 @@
     </div>
   </div>
 </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+  let extraFormAction = document.createElement("input");
+  extraFormAction.setAttribute("name", "{{ form.prefix }}-action");
+  extraFormAction.setAttribute("type", "text");
+
+  let extraFormDate = document.createElement("input");
+  extraFormDate.setAttribute("name", "{{ form.prefix }}-date");
+  extraFormDate.setAttribute("type", "date");
+
+  let extraFormStartTime = document.createElement("input");
+  extraFormStartTime.setAttribute("name", "{{ form.prefix }}-start_time");
+  extraFormStartTime.setAttribute("type", "time");
+
+  let extraFormEndTime = document.createElement("input");
+  extraFormEndTime.setAttribute("name", "{{ form.prefix }}-end_time");
+  extraFormEndTime.setAttribute("type", "time");
+
+  document.querySelector("#add").addEventListener("click", () => {
+    let table = document.getElementById("form_table");
+    let newRow = table.insertRow();
+
+    let newCell = newRow.insertCell();
+    newCell.appendChild(extraFormAction);
+
+    newCell = newRow.insertCell();
+    newCell.appendChild(extraFormDate);
+
+    newCell = newRow.insertCell();
+    newCell.appendChild(extraFormStartTime);
+    newCell.appendChild(extraFormEndTime);
+  });
+</script>
+
+<!--どうしてもよみこんでくれないので一端コメントアウトして上に直接書く。-->
+<!--
+<script type="text/javascript" src="{% static 'js/form_adjust.js' %}"></script>
+-->
+
 {% endblock %}
