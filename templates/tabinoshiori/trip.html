@@ -8,41 +8,44 @@
       <!-- カードヘッダー -->
       <div class='card-header bg-primary text-light'>
         <h4>{{ title }}</h4>
+        <h6>{{ start_date }}~{{ end_date }}</h6>
       </div>
+
       <!-- カードボディー -->
       <div class='card-body'>
+        {% for itinerarys in itinerarys_list %}
+        <h5>{{ dates|slice:forloop.counter|last }}</h5>
         <table>
           <thead>
-            <td>
-              日付
-            </td>
-            <td>
-              開始時間
-            </td>
-            <td>
-              終了時間
-            </td>
-            <td>
-              行動
-            </td>
+            <tr>
+              <td>
+                開始時間
+              </td>
+              <td>
+                終了時間
+              </td>
+              <td>
+                行動
+              </td>
+            </tr>
           </thead>
-          {% for itinerary in itinerarys %}
-          <tr>
-            <td>
-              {{ itinerary.date }}
-            </td>
-            <td>
-              {{ itinerary.start_time }}
-            </td>
-            <td>
-              {{ itinerary.end_time }}
-            </td>
-            <td>
-              {{ itinerary.action }}
-            </td>
-          </tr>
-          {% endfor %}
+          <tbody>
+            {% for itinerary in itinerarys %}
+            <tr>
+              <td>
+                {{ itinerary.start_time }}
+              </td>
+              <td>
+                {{ itinerary.end_time }}
+              </td>
+              <td>
+                {{ itinerary.action }}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
         </table>
+        {% endfor %}
         <a href="{% url 'tabinoshiori:registeritinerary' pk=id %}">旅程を登録する</a>
       </div>
     </div>
