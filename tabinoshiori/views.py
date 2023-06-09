@@ -11,6 +11,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
+from datetime import timedelta
 
 # Create your views here.
 @login_required
@@ -37,10 +38,30 @@ class MyHome(LoginRequiredMixin, TemplateView):
 def ItineraryView(request, pk):
     user = request.user
     trip = Trip.objects.get(username__username=user.username, id=pk)
+    start_date = trip.start_date
+    end_date = trip.end_date
+    
+    # itinerarys = Itinerary.objects.filter(username__username=user.username, title__title=trip.title).order_by('date', 'start_time')
+    itinerarys_list = []
+    dates = Itinerary.objects.filter(username__username=user.username, title__title=trip.title).order_by("date").distinct().values_list("date", flat=True)
+    print(dates)
+    for date in dates:
+        itinerarys_list.append(Itinerary.objects.filter(username__username=user.username, title__title=trip.title, date=date).order_by("start_time"))
+    
+    '''
+    date_list = []
+    current_date = start_date
+    while current_date <= end_date:
+        date_list.append(current_date.strftime('%Y-%m-%d'))
+        current_date += timedelta(days=1)
+    '''
     context = {
         "title": trip.title,
         "id": trip.id,
-        "itinerarys": Itinerary.objects.filter(username__username=user.username, title__title=trip.title).order_by('date', 'start_time'),
+        "itinerarys_list": itinerarys_list,
+        "dates": dates,
+        "start_date": start_date,
+        "end_date": end_date,
     }
     return render(request, 'tabinoshiori/trip.html', context)
 
@@ -77,7 +98,6 @@ class MyRegisterItinerary(FormView, LoginRequiredMixin):
 
 @login_required
 def RegisterItineraryView(request, pk):
-    
     # フォームセット定義
     MyFormSet = modelformset_factory(
         model=Itinerary,
@@ -86,6 +106,17 @@ def RegisterItineraryView(request, pk):
         max_num=30,
     )
     
+    user = request.user
+    trip = Trip.objects.get(username__username=user.username, id=pk)
+    start_date = trip.start_date
+    end_date = trip.end_date
+    # 日付のリスト
+    date_list = []
+    current_date = start_date
+    while current_date <= end_date:
+        date_list.append(current_date.strftime('%Y-%m-%d'))
+        current_date += timedelta(days=1)
+    
     if request.method=='POST':
         form_set = MyFormSet(request.POST)
         if form_set.is_valid():
@@ -93,7 +124,7 @@ def RegisterItineraryView(request, pk):
                 for form in form_set:
                     itinerary = form.save(commit=False)
                     itinerary.title = get_object_or_404(Trip, pk=pk)
-                    itinerary.username = request.user
+                    itinerary.username = user
                     itinerary.save()
             return redirect('tabinoshiori:itinerary', pk=pk)
         
@@ -102,6 +133,7 @@ def RegisterItineraryView(request, pk):
                 "form_set": form_set,
                 "title": get_object_or_404(Trip, pk=pk),
                 "message": form_set.non_form_errors,
+                "date_list": date_list,
             }
             return render(request, "tabinoshiori/registeritinerary.html", context)
         
@@ -110,10 +142,10 @@ def RegisterItineraryView(request, pk):
         context = {
             "form_set": form_set,
             "title": get_object_or_404(Trip, pk=pk),
+            "date_list": date_list,
         }
         
         return render(request, "tabinoshiori/registeritinerary.html", context)
-
 
 
 '''
