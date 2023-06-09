@@ -70,6 +70,7 @@ def MyRegisterItinerary(request, pk):
         model=Itinerary,
         form=ItineraryForm,
         extra=2,
+        max_num=30,
     )
     
     if request.method=='POST':
@@ -95,7 +96,6 @@ def MyRegisterItinerary(request, pk):
         form_set = MyFormSet(queryset=Itinerary.objects.none())
         context = {
             "form_set": form_set,
-            "extra_form": ItineraryForm,
             "title": get_object_or_404(Trip, pk=pk)
         }
         

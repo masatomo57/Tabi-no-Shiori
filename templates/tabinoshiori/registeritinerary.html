@@ -23,7 +23,6 @@
               </tr>
               {% for form in form_set %}
               <tr>
-                {% csrf_token %}
                 <td>
                   {{ form.action }}
                 </td>
@@ -57,35 +56,48 @@
 {% block javascript %}
 
 <script>
-  let extraFormAction = document.createElement("input");
-  extraFormAction.setAttribute("name", "{{ form.prefix }}-action");
-  extraFormAction.setAttribute("type", "text");
-
-  let extraFormDate = document.createElement("input");
-  extraFormDate.setAttribute("name", "{{ form.prefix }}-date");
-  extraFormDate.setAttribute("type", "date");
-
-  let extraFormStartTime = document.createElement("input");
-  extraFormStartTime.setAttribute("name", "{{ form.prefix }}-start_time");
-  extraFormStartTime.setAttribute("type", "time");
-
-  let extraFormEndTime = document.createElement("input");
-  extraFormEndTime.setAttribute("name", "{{ form.prefix }}-end_time");
-  extraFormEndTime.setAttribute("type", "time");
-
-  document.querySelector("#add").addEventListener("click", () => {
+  document.addEventListener('DOMContentLoaded', () => {
+    let totalManageElement = document.getElementById("id_form-TOTAL_FORMS");
+    let formCount = parseInt(totalManageElement.value);
     let table = document.getElementById("form_table");
-    let newRow = table.insertRow();
 
-    let newCell = newRow.insertCell();
-    newCell.appendChild(extraFormAction);
+    document.querySelector("#add").addEventListener("click", () => {
 
-    newCell = newRow.insertCell();
-    newCell.appendChild(extraFormDate);
+      let extraFormAction = document.createElement("input");
+      extraFormAction.type = "text";
+      extraFormAction.name = "form-" + formCount + "-action";
+      extraFormAction.id = "id_form-" + formCount + "-action";
+  
+      let extraFormDate = document.createElement("input");
+      extraFormDate.type = "date";
+      extraFormDate.name = "form-" + formCount + "-date";
+      extraFormDate.id = "id_form-" + formCount + "-date";
+  
+      let extraFormStartTime = document.createElement("input");
+      extraFormStartTime.type = "time";
+      extraFormStartTime.name = "form-" + formCount + "-start_time";
+      extraFormStartTime.id = "id_form-" + formCount + "-start_time";
+  
+      let extraFormEndTime = document.createElement("input");
+      extraFormEndTime.type = "time";
+      extraFormEndTime.name = "form-" + formCount + "-end_time";
+      extraFormEndTime.id = "id_form-" + formCount + "-end_time";
 
-    newCell = newRow.insertCell();
-    newCell.appendChild(extraFormStartTime);
-    newCell.appendChild(extraFormEndTime);
+      let newRow = table.insertRow();
+
+      let newCell = newRow.insertCell();
+      newCell.appendChild(extraFormAction);
+
+      newCell = newRow.insertCell();
+      newCell.appendChild(extraFormDate);
+
+      newCell = newRow.insertCell();
+      newCell.appendChild(extraFormStartTime);
+      newCell.appendChild(extraFormEndTime);
+
+      formCount += 1;
+      totalManageElement.value = formCount
+    });
   });
 </script>
 
