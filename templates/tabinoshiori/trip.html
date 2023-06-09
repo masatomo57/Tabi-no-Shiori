@@ -7,7 +7,7 @@
     <div class='card mt-3 mb-3 bg-light'>
       <!-- カードヘッダー -->
       <div class='card-header bg-primary text-light'>
-        <h4>{{ trip.title }}</h4>
+        <h4>{{ title }}</h4>
       </div>
       <!-- カードボディー -->
       <div class='card-body'>
@@ -26,7 +26,7 @@
               行動
             </td>
           </thead>
-          {% for itinerary in trip.title_itinerary.all %}
+          {% for itinerary in itinerarys %}
           <tr>
             <td>
               {{ itinerary.date }}
@@ -43,7 +43,7 @@
           </tr>
           {% endfor %}
         </table>
-        <a href="{% url 'tabinoshiori:registeritinerary' trip.id %}">旅程を登録する</a>
+        <a href="{% url 'tabinoshiori:registeritinerary' pk=id %}">旅程を登録する</a>
       </div>
     </div>
   </div>

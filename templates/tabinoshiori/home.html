@@ -26,7 +26,7 @@
       <!-- カードボディー -->
       <div class='card-body'>
         {% for trip in trips %}
-        <a href="{% url 'tabinoshiori:itinerary' trip.id %}"><h1>{{ trip.title }}</h1></a>
+        <a href="{% url 'tabinoshiori:itinerary' pk=trip.id %}"><h1>{{ trip.title }}</h1></a>
         <p>{{ trip.start_date }}〜{{ trip.end_date }}</p>
         <p>{{ trip.comment }}</p>
         {% endfor %}
