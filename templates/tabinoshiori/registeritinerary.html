@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load static %}
 
 <!-- コンテンツ -->
 {% block content %}
@@ -13,14 +14,15 @@
       <div class='card-body'>
         <form method="POST">
           <div>
-            <table>
+            {% csrf_token %}
+            <table id="form_table">
               <tr>
                 <th>行動</th>
                 <th>日付</th>
                 <th>時間</th>
               </tr>
+              {% for form in form_set %}
               <tr>
-                {% csrf_token %}
                 <td>
                   {{ form.action }}
                 </td>
@@ -28,17 +30,80 @@
                   {{ form.date }}
                 </td>
                 <td>
-                  {{ form.start_time }} ~ {{ form.end_time }}
+                  {{ form.start_time }}{{ form.end_time }}
                 </td>
               </tr>
+              {% endfor %}
             </table>
           </div>
+          {{ form_set.management_form }}
+          <!--上のmanagement_formはformset使う時は絶対必要！-->
           <div>
             <button type="submit">登録</button>
           </div>
         </form>
+        <button id="add"> + </button>
+        <h3>
+          {{ message }}
+        </h3>
       </div>
     </div>
   </div>
 </div>
+
+{% endblock %}
+
+{% block javascript %}
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    let totalManageElement = document.getElementById("id_form-TOTAL_FORMS");
+    let formCount = parseInt(totalManageElement.value);
+    let table = document.getElementById("form_table");
+
+    document.querySelector("#add").addEventListener("click", () => {
+
+      let extraFormAction = document.createElement("input");
+      extraFormAction.type = "text";
+      extraFormAction.name = "form-" + formCount + "-action";
+      extraFormAction.id = "id_form-" + formCount + "-action";
+  
+      let extraFormDate = document.createElement("input");
+      extraFormDate.type = "date";
+      extraFormDate.name = "form-" + formCount + "-date";
+      extraFormDate.id = "id_form-" + formCount + "-date";
+  
+      let extraFormStartTime = document.createElement("input");
+      extraFormStartTime.type = "time";
+      extraFormStartTime.name = "form-" + formCount + "-start_time";
+      extraFormStartTime.id = "id_form-" + formCount + "-start_time";
+  
+      let extraFormEndTime = document.createElement("input");
+      extraFormEndTime.type = "time";
+      extraFormEndTime.name = "form-" + formCount + "-end_time";
+      extraFormEndTime.id = "id_form-" + formCount + "-end_time";
+
+      let newRow = table.insertRow();
+
+      let newCell = newRow.insertCell();
+      newCell.appendChild(extraFormAction);
+
+      newCell = newRow.insertCell();
+      newCell.appendChild(extraFormDate);
+
+      newCell = newRow.insertCell();
+      newCell.appendChild(extraFormStartTime);
+      newCell.appendChild(extraFormEndTime);
+
+      formCount += 1;
+      totalManageElement.value = formCount
+    });
+  });
+</script>
+
+<!--どうしてもよみこんでくれないので一端コメントアウトして上に直接書く。-->
+<!--
+<script type="text/javascript" src="{% static 'js/form_adjust.js' %}"></script>
+-->
+
 {% endblock %}
