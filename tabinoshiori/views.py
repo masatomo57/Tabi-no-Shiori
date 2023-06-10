@@ -44,7 +44,6 @@ def ItineraryView(request, pk):
     # itinerarys = Itinerary.objects.filter(username__username=user.username, title__title=trip.title).order_by('date', 'start_time')
     itinerarys_list = []
     dates = Itinerary.objects.filter(username__username=user.username, title__title=trip.title).order_by("date").distinct().values_list("date", flat=True)
-    print(dates)
     for date in dates:
         itinerarys_list.append(Itinerary.objects.filter(username__username=user.username, title__title=trip.title, date=date).order_by("start_time"))
     
@@ -99,50 +98,59 @@ class MyRegisterItinerary(FormView, LoginRequiredMixin):
 @login_required
 def RegisterItineraryView(request, pk):
     # フォームセット定義
-    MyFormSet = modelformset_factory(
+    ItineraryFormSet = modelformset_factory(
         model=Itinerary,
         form=ItineraryForm,
-        extra=2,
-        max_num=30,
+        extra=0,
+        max_num=100,
     )
     
     user = request.user
     trip = Trip.objects.get(username__username=user.username, id=pk)
+    title = trip.title
     start_date = trip.start_date
     end_date = trip.end_date
     # 日付のリスト
-    date_list = []
+    dates = []
     current_date = start_date
     while current_date <= end_date:
-        date_list.append(current_date.strftime('%Y-%m-%d'))
+        dates.append(current_date.strftime('%Y-%m-%d'))
         current_date += timedelta(days=1)
     
     if request.method=='POST':
-        form_set = MyFormSet(request.POST)
+        form_set = ItineraryFormSet(data=request.POST)
+        instances = form_set.save(commit=False)
         if form_set.is_valid():
+            for instance in instances:
+                instance.title = get_object_or_404(Trip, pk=pk)
+                instance.username = user
+                instance.save()
+            '''
             with transaction.atomic():
                 for form in form_set:
                     itinerary = form.save(commit=False)
                     itinerary.title = get_object_or_404(Trip, pk=pk)
                     itinerary.username = user
                     itinerary.save()
+            '''
             return redirect('tabinoshiori:itinerary', pk=pk)
         
         else:
             context = {
                 "form_set": form_set,
                 "title": get_object_or_404(Trip, pk=pk),
-                "message": form_set.non_form_errors,
-                "date_list": date_list,
+                "date_list": dates,
             }
             return render(request, "tabinoshiori/registeritinerary.html", context)
         
     elif request.method=='GET':
-        form_set = MyFormSet(queryset=Itinerary.objects.none())
+        form_set = ItineraryFormSet(queryset=Itinerary.objects.filter(username__username=user.username, title__title=title).order_by("date"))
+        # form_set = ItineraryFormSet(queryset=Itinerary.objects.none())
+        
         context = {
             "form_set": form_set,
             "title": get_object_or_404(Trip, pk=pk),
-            "date_list": date_list,
+            "dates": dates,
         }
         
         return render(request, "tabinoshiori/registeritinerary.html", context)

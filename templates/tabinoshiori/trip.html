@@ -15,7 +15,7 @@
       <div class='card-body'>
         {% for itinerarys in itinerarys_list %}
         <h5>{{ dates|slice:forloop.counter|last }}</h5>
-        <table>
+        <table class="table table-bordered border-primary">
           <thead>
             <tr>
               <td>
@@ -46,7 +46,7 @@
           </tbody>
         </table>
         {% endfor %}
-        <a href="{% url 'tabinoshiori:registeritinerary' pk=id %}">旅程を登録する</a>
+        <a href="{% url 'tabinoshiori:registeritinerary' pk=id %}">旅程を登録・編集する</a>
       </div>
     </div>
   </div>
