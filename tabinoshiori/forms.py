@@ -15,6 +15,7 @@ class TripForm(ModelForm):
             'end_date': DateInput(attrs={'type': 'date'}),
         } # inputのtypeを設定
 
+
 class ItineraryForm(ModelForm):
     class Meta:
         model = Itinerary

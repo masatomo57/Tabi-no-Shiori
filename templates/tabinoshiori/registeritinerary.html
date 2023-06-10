@@ -15,35 +15,39 @@
         <form method="POST">
           <div>
             {% csrf_token %}
-            <table id="form_table" class="table table-bordered border-primary">
-              <tr>
-                <th>行動</th>
-                <th>日付</th>
-                <th>時間</th>
-              </tr>
-              {% for form in form_set %}
-              <tr>
-                <td>
-                  {{ form.action }}
-                </td>
-                <td>
-                  {{ form.date }}
-                </td>
-                <td>
-                  {{ form.start_time }}{{ form.end_time }}
-                </td>
-                {{ form.id }}
-              </tr>
-              {% endfor %}
-            </table>
+            {% for form_set in form_sets %}
+            <div>
+              <h5 id="date{{ forloop.counter }}">{{ dates|slice:forloop.counter|last }}</h5>
+              <table id="form_table{{ forloop.counter }}" class="table table-bordered border-primary">
+                <tr>
+                  <th>時間</th>
+                  <th>行動</th>
+                </tr>
+                {% for form in form_set %}
+                <tr>
+                  <td>
+                    {{ form.start_time }}{{ form.end_time }}
+                  </td>
+                  <td>
+                    {{ form.action }}
+                  </td>
+                  {{ form.date.as_hidden }}
+                  {{ form.id }}
+                </tr>
+                {% endfor %}
+              </table>
+              <div>
+                <button type="button" data-index="{{ forloop.counter }}" name="add{{ forloop.counter }}" id="add{{ forloop.counter }}" onclick="add(event)"> + </button>
+              </div>
+              {{ form_set.management_form }}
+              <!--上のmanagement_formはformset使う時は絶対必要！-->
+            </div>
+            {% endfor %}
           </div>
-          {{ form_set.management_form }}
-          <!--上のmanagement_formはformset使う時は絶対必要！-->
           <div>
             <button type="submit">登録</button>
           </div>
         </form>
-        <button id="add"> + </button>
       </div>
     </div>
   </div>
@@ -54,49 +58,49 @@
 {% block javascript %}
 
 <script>
-  document.addEventListener('DOMContentLoaded', () => {
-    let totalManageElement = document.getElementById("id_form-TOTAL_FORMS");
+  function add(event){
+    const index = event.target.dataset.index.toString();
+
+    let totalManageElement = document.getElementById(`id_form_set${index}-TOTAL_FORMS`);
     let formCount = parseInt(totalManageElement.value);
-    let table = document.getElementById("form_table");
+    let table = document.getElementById(`form_table${index}`);
 
-    document.querySelector("#add").addEventListener("click", () => {
+    let extraFormStartTime = document.createElement("input");
+    extraFormStartTime.type = "time";
+    extraFormStartTime.name = `form_set${index}-` + formCount + "-start_time";
+    extraFormStartTime.id = `id_form_set${index}-` + formCount + "-start_time";
 
-      let extraFormAction = document.createElement("input");
-      extraFormAction.type = "text";
-      extraFormAction.name = "form-" + formCount + "-action";
-      extraFormAction.id = "id_form-" + formCount + "-action";
-  
-      let extraFormDate = document.createElement("input");
-      extraFormDate.type = "date";
-      extraFormDate.name = "form-" + formCount + "-date";
-      extraFormDate.id = "id_form-" + formCount + "-date";
-  
-      let extraFormStartTime = document.createElement("input");
-      extraFormStartTime.type = "time";
-      extraFormStartTime.name = "form-" + formCount + "-start_time";
-      extraFormStartTime.id = "id_form-" + formCount + "-start_time";
-  
-      let extraFormEndTime = document.createElement("input");
-      extraFormEndTime.type = "time";
-      extraFormEndTime.name = "form-" + formCount + "-end_time";
-      extraFormEndTime.id = "id_form-" + formCount + "-end_time";
+    let extraFormEndTime = document.createElement("input");
+    extraFormEndTime.type = "time";
+    extraFormEndTime.name = `form_set${index}-` + formCount + "-end_time";
+    extraFormEndTime.id = `id_form_set${index}-` + formCount + "-end_time";
 
-      let newRow = table.insertRow();
+    let extraFormAction = document.createElement("input");
+    extraFormAction.type = "text";
+    extraFormAction.name = `form_set${index}-` + formCount + "-action";
+    extraFormAction.id = `id_form_set${index}-` + formCount + "-action";
 
-      let newCell = newRow.insertCell();
-      newCell.appendChild(extraFormAction);
+    let extraFormDate = document.createElement("input");
+    extraFormDate.type = "hidden";
+    extraFormDate.name = `form_set${index}-` + formCount + "-date";
+    extraFormDate.id = `id_form_set${index}-` + formCount + "-date";
+    extraFormDate.value = document.getElementById(`date${index}`).innerHTML;
 
-      newCell = newRow.insertCell();
-      newCell.appendChild(extraFormDate);
 
-      newCell = newRow.insertCell();
-      newCell.appendChild(extraFormStartTime);
-      newCell.appendChild(extraFormEndTime);
+    let newRow = table.insertRow();
 
-      formCount += 1;
-      totalManageElement.value = formCount
-    });
-  });
+    let newCell = newRow.insertCell();
+    newCell.appendChild(extraFormStartTime);
+    newCell.appendChild(extraFormEndTime);
+
+    newCell = newRow.insertCell();
+    newCell.appendChild(extraFormAction);
+
+    newRow.appendChild(extraFormDate);
+
+    formCount += 1;
+    totalManageElement.value = formCount
+  };
 </script>
 
 <!--どうしてもよみこんでくれないので一端コメントアウトして上に直接書く。-->
