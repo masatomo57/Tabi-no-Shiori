@@ -3,7 +3,7 @@ from django.core.files.base import File
 from django.db.models.base import Model
 from django.forms.utils import ErrorList
 from tabinoshiori.models import Trip, Itinerary
-from django.forms import ModelForm, DateInput, TimeInput, SelectDateWidget
+from django.forms import ModelForm, DateInput, TimeInput
 
 
 class TripForm(ModelForm):

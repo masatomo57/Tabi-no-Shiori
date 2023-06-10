@@ -10,18 +10,12 @@
       <div class='card-header bg-primary text-light'>
         <h4>{{ title }}の旅程を登録</h4>
       </div>
-      <datalist id="date_list">
-        {% for date in date_list %}
-        <option value={{ date }}>
-        {% endfor %}
-      </datalist>
-
       <!-- カードボディー -->
       <div class='card-body'>
         <form method="POST">
           <div>
             {% csrf_token %}
-            <table id="form_table">
+            <table id="form_table" class="table table-bordered border-primary">
               <tr>
                 <th>行動</th>
                 <th>日付</th>
@@ -34,11 +28,11 @@
                 </td>
                 <td>
                   {{ form.date }}
-                  </select>
                 </td>
                 <td>
                   {{ form.start_time }}{{ form.end_time }}
                 </td>
+                {{ form.id }}
               </tr>
               {% endfor %}
             </table>
@@ -50,9 +44,6 @@
           </div>
         </form>
         <button id="add"> + </button>
-        <h3>
-          {{ message }}
-        </h3>
       </div>
     </div>
   </div>

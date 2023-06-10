@@ -10,46 +10,42 @@
       <div class='card-header bg-primary text-light'>
         <h4>{{ title }}の旅程を登録</h4>
       </div>
-      <datalist id="date_list">
-        {% for date in date_list %}
-        <option value={{ date }}>
-        {% endfor %}
-      </datalist>
 
       <!-- カードボディー -->
       <div class='card-body'>
         <form method="POST">
+          {% csrf_token %}
+          <h5>{{ dates|slice:forloop.counter|last }}</h5>
+          {% for itinerarys in itinerarys_list %}
           <div>
-            {% csrf_token %}
-            <table id="form_table">
+            <table id="form_table{{ forloop.counter }}">
               <tr>
-                <th>行動</th>
-                <th>日付</th>
                 <th>時間</th>
+                <th>行動</th>
               </tr>
               {% for form in form_set %}
               <tr>
-                <td>
-                  {{ form.action }}
-                </td>
-                <td>
-                  {{ form.date }}
-                  </select>
-                </td>
+                <option type="hidden">{{ form.date }}</option>
                 <td>
                   {{ form.start_time }}{{ form.end_time }}
+                </td>
+                <td>
+                  {{ form.action }}
                 </td>
               </tr>
               {% endfor %}
             </table>
           </div>
+          <div>
+            <button date-index="{{ forloop.counter }}" type="button" id="add{{ forloop.counter }}" onclick="additinerary()"> + </button>
+          </div>
+          {% endfor %}
           {{ form_set.management_form }}
           <!--上のmanagement_formはformset使う時は絶対必要！-->
           <div>
             <button type="submit">登録</button>
           </div>
         </form>
-        <button id="add"> + </button>
         <h3>
           {{ message }}
         </h3>
@@ -69,11 +65,6 @@
     let table = document.getElementById("form_table");
 
     document.querySelector("#add").addEventListener("click", () => {
-
-      let extraFormAction = document.createElement("input");
-      extraFormAction.type = "text";
-      extraFormAction.name = "form-" + formCount + "-action";
-      extraFormAction.id = "id_form-" + formCount + "-action";
   
       let extraFormDate = document.createElement("input");
       extraFormDate.type = "date";
@@ -90,17 +81,22 @@
       extraFormEndTime.name = "form-" + formCount + "-end_time";
       extraFormEndTime.id = "id_form-" + formCount + "-end_time";
 
+      let extraFormAction = document.createElement("input");
+      extraFormAction.type = "text";
+      extraFormAction.name = "form-" + formCount + "-action";
+      extraFormAction.id = "id_form-" + formCount + "-action";
+
       let newRow = table.insertRow();
 
       let newCell = newRow.insertCell();
-      newCell.appendChild(extraFormAction);
+      newCell.appendChild(extraFormStartTime);
+      newCell.appendChild(extraFormEndTime);
 
       newCell = newRow.insertCell();
       newCell.appendChild(extraFormDate);
 
       newCell = newRow.insertCell();
-      newCell.appendChild(extraFormStartTime);
-      newCell.appendChild(extraFormEndTime);
+      newCell.appendChild(extraFormAction);
 
       formCount += 1;
       totalManageElement.value = formCount
