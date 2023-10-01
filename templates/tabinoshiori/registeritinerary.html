@@ -69,22 +69,31 @@
     extraFormStartTime.type = "time";
     extraFormStartTime.name = `form_set${index}-` + formCount + "-start_time";
     extraFormStartTime.id = `id_form_set${index}-` + formCount + "-start_time";
+    extraFormStartTime.required = true;
 
     let extraFormEndTime = document.createElement("input");
     extraFormEndTime.type = "time";
     extraFormEndTime.name = `form_set${index}-` + formCount + "-end_time";
     extraFormEndTime.id = `id_form_set${index}-` + formCount + "-end_time";
+    extraFormEndTime.required = true;
+    
 
     let extraFormAction = document.createElement("input");
     extraFormAction.type = "text";
     extraFormAction.name = `form_set${index}-` + formCount + "-action";
     extraFormAction.id = `id_form_set${index}-` + formCount + "-action";
+    extraFormAction.required = true;
 
     let extraFormDate = document.createElement("input");
     extraFormDate.type = "hidden";
     extraFormDate.name = `form_set${index}-` + formCount + "-date";
     extraFormDate.id = `id_form_set${index}-` + formCount + "-date";
     extraFormDate.value = document.getElementById(`date${index}`).innerHTML;
+
+    let extraFormId = document.createElement("input");
+    extraFormId.type = "hidden";
+    extraFormId.name = `form_set${index}-` + formCount + "-id";
+    extraFormId.id = `id_form_set${index}-` + formCount + "-id";
 
 
     let newRow = table.insertRow();
@@ -97,6 +106,8 @@
     newCell.appendChild(extraFormAction);
 
     newRow.appendChild(extraFormDate);
+
+    newRow.appendChild(extraFormId);
 
     formCount += 1;
     totalManageElement.value = formCount

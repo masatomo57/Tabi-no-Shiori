@@ -30,7 +30,7 @@
                   {{ form.date }}
                 </td>
                 <td>
-                  {{ form.start_time }}{{ form.end_time }}
+                  {{ form.start_time }}~{{ form.end_time }}
                 </td>
                 {{ form.id }}
               </tr>
@@ -91,6 +91,7 @@
 
       newCell = newRow.insertCell();
       newCell.appendChild(extraFormStartTime);
+      newCell.appendChild("~");
       newCell.appendChild(extraFormEndTime);
 
       formCount += 1;

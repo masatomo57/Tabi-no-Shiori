@@ -120,22 +120,40 @@ def RegisterItineraryView(request, pk):
     )
     
     if request.method=='POST':
-        form_set = ItineraryFormSet(data=request.POST)
-        instances = form_set.save(commit=False)
-        if form_set.is_valid():
-            for instance in instances:
-                instance.title = get_object_or_404(Trip, pk=pk)
-                instance.username = user
-                instance.save()
-            return redirect('tabinoshiori:itinerary', pk=pk)
+        valid_forms = []
+        form_sets = []
+        trigger = 0
+        for i in range(1, len(dates)+1):
+            print(request.POST)
+            form_set = ItineraryFormSet(request.POST, prefix=f"form_set{str(i)}")
+            print(form_set.errors)
+            form_sets.append(form_set)
+            instances = form_set.save(commit=False)
+            if form_set.is_valid():
+                print(form_set.is_valid())
+                for instance in instances:
+                    if instance.start_time=="" or instance.end_time=="" or instance.action=="" or instance.date=="":
+                        trigger = 1
+                        print("1111111111111111111111111111")
+                    else:
+                        instance.title = get_object_or_404(Trip, pk=pk)
+                        instance.username = user
+                        valid_forms.append(instance)
+
         
-        else:
+        if trigger == 1:
             context = {
-                "form_set": form_set,
+                "form_sets": form_sets,
                 "title": get_object_or_404(Trip, pk=pk),
-                "date_list": dates,
+                "dates": dates,
             }
             return render(request, "tabinoshiori/registeritinerary.html", context)
+        
+        for form in valid_forms:
+            form.save()
+        
+        return redirect('tabinoshiori:itinerary', pk=pk)
+        
         
     elif request.method=='GET':
         form_sets = []
@@ -153,21 +171,3 @@ def RegisterItineraryView(request, pk):
         }
         
         return render(request, "tabinoshiori/registeritinerary.html", context)
-
-
-'''
-class MyRegisterItinerary(LoginRequiredMixin, CreateView):
-    model = Itinerary
-    form_class = ItineraryForm
-    template_name = 'tabinoshiori/registeritinerary.html'
-    def form_valid(self, form):
-        form.instance.username = self.request.user
-        form.instance.title = get_object_or_404(Trip, pk=self.kwargs.get('pk'))
-        return super().form_valid(form)
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['title'] = get_object_or_404(Trip, pk=self.kwargs.get('pk'))
-        return context
-    def get_success_url(self):
-        return reverse('tabinoshiori:itinerary', kwargs={'pk': self.kwargs.get('pk')})
-'''
