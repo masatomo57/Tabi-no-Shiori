@@ -99,7 +99,7 @@ class MyRegisterItinerary(FormView, LoginRequiredMixin):
 def RegisterItineraryView(request, pk):
     # 必要な変数の定義
     user = request.user
-    trip = Trip.objects.get(username__username=user.username, id=pk)
+    trip = get_object_or_404(Trip, username__username=user.username, id=pk)
     title = trip.title
     start_date = trip.start_date
     end_date = trip.end_date
@@ -120,51 +120,29 @@ def RegisterItineraryView(request, pk):
     )
     
     if request.method=='POST':
-        valid_forms = []
         form_sets = []
-        trigger = 0
-        for i in range(1, len(dates)+1):
-            print(request.POST)
+        for i, date in enumerate(dates, start=1):
             form_set = ItineraryFormSet(request.POST, prefix=f"form_set{str(i)}")
-            print(form_set.errors)
             form_sets.append(form_set)
-            instances = form_set.save(commit=False)
+            
             if form_set.is_valid():
-                print(form_set.is_valid())
-                for instance in instances:
-                    if instance.start_time=="" or instance.end_time=="" or instance.action=="" or instance.date=="":
-                        trigger = 1
-                        print("1111111111111111111111111111")
-                    else:
-                        instance.title = get_object_or_404(Trip, pk=pk)
-                        instance.username = user
-                        valid_forms.append(instance)
-
-        
-        if trigger == 1:
-            context = {
-                "form_sets": form_sets,
-                "title": get_object_or_404(Trip, pk=pk),
-                "dates": dates,
-            }
-            return render(request, "tabinoshiori/registeritinerary.html", context)
-        
-        for form in valid_forms:
-            form.save()
+                valid_forms = form_set.save(commit=False)
+                for form in valid_forms:
+                    form.title =  trip
+                    form.username = user
+                    form.save()
+            else:
+                pass
         
         return redirect('tabinoshiori:itinerary', pk=pk)
         
         
     elif request.method=='GET':
         form_sets = []
-        for date, i in zip(dates, range(1, len(dates)+1)):
+        for i, date in enumerate(dates, start=1):
             form_sets.append(ItineraryFormSet(queryset=Itinerary.objects.filter(username__username=user.username, title__title=title, date=date), prefix=f"form_set{str(i)}"))
-        # for date in dates:
-        #     form_sets.append(ItineraryFormSet(queryset=Itinerary.objects.filter(username__username=user.username, title__title=title, date=date)))
-        # form_set = ItineraryFormSet(queryset=Itinerary.objects.filter(username__username=user.username, title__title=title).order_by("date"))
         
         context = {
-            # "form_set": form_set,
             "form_sets": form_sets,
             "title": get_object_or_404(Trip, pk=pk),
             "dates": dates,
