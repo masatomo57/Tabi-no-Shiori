@@ -1,4 +1,3 @@
-from typing import Any, Dict
 from .forms import SignupForm, LoginForm
 from django.contrib.auth import login
 from django.contrib.auth.models import User

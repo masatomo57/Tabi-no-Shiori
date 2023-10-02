@@ -1,14 +1,10 @@
-from typing import Any, Dict
-from django.forms import formset_factory
-from django.forms.models import BaseModelForm, modelformset_factory, inlineformset_factory
-from django.http import HttpResponse
-from django.views.generic import TemplateView, CreateView, DetailView, FormView
+from django.forms.models import modelformset_factory
+from django.views.generic import CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from tabinoshiori.models import Trip, Itinerary
 from tabinoshiori.forms import TripForm, ItineraryForm
-from django.urls import reverse, reverse_lazy
+from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db import transaction
 from django.contrib.auth.decorators import login_required
 
 from datetime import timedelta
