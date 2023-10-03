@@ -101,7 +101,6 @@ def DeleteTripView(request):
                 trip.delete()
         
         return redirect('tabinoshiori:deletetrip')
-                
     elif request.method=='GET':
         context = {
             "trip_list": trip_list
@@ -145,12 +144,17 @@ def RegisterItineraryView(request, pk):
                     form.title =  trip
                     form.username = user
                     form.save()
-                    print(request.POST)
-                    if f'is_delete{i}{j}' in request.POST:
-                        print(i, j)
-                        Itinerary.objects.filter(form.id).delete()
+                    print(form.id)
+                    if f'is_delete{str(i)}{str(j)}' in request.POST:
+                        Itinerary.objects.filter(id=form.id).delete()
             else:
                 pass
+            
+            for_delete_forms = form_set.save(commit=False)
+            print(for_delete_forms)
+            for j, form in enumerate(for_delete_forms, start=1):
+                if f'is_delete{str(i)}{str(j)}' in request.POST:
+                    Itinerary.objects.filter(id=form.id).delete()
             
         
         return redirect('tabinoshiori:itinerary', pk=pk)
@@ -160,6 +164,7 @@ def RegisterItineraryView(request, pk):
         form_sets = []
         for i, date in enumerate(dates, start=1):
             form_sets.append(ItineraryFormSet(queryset=Itinerary.objects.filter(username__username=user.username, title__title=title, date=date), prefix=f"form_set{str(i)}"))
+        
         
         context = {
             "form_sets": form_sets,

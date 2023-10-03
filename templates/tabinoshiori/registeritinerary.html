@@ -18,7 +18,7 @@
             {% for form_set in form_sets %}
             <div>
               <h5 id="date{{ forloop.counter }}">{{ dates|slice:forloop.counter|last }}</h5>
-              <table id="form_table{{ forloop.counter }}" class="table table-bordered">
+              <table id="form_table{{ forloop.counter }}" class="table table-bordered8ujh ">
                 <tr>
                   <th style="width: 30%">時間</th>
                   <th style="width: 60%">行動</th>
@@ -33,7 +33,7 @@
                     {{ form.action }}
                   </td>
                   <td>
-                    <input type="checkbox" name="is_delete{{ forloop.parentloop.counter }}{{ forloop.counter }}" value="form_set{{ forloop.parentloop.counter }}-{{ forloop.counter }}-id">
+                    <input type="checkbox" name="is_delete{{ forloop.parentloop.counter }}{{ forloop.counter }}" onchange="deleteitinerary(this, {{ forloop.parentloop.counter }}, {{ forloop.counter0 }})">
                   </td>
                   {{ form.date.as_hidden }}
                   {{ form.id }}
@@ -88,6 +88,10 @@
     extraFormAction.id = `id_form_set${index}-` + formCount + "-action";
     extraFormAction.required = true;
 
+    let extraFormDeleteCheckBox = document.createElement("input");
+    extraFormDeleteCheckBox.type = "checkbox";
+    extraFormDeleteCheckBox.name = `is_delete${index}` + formCount;
+
     let extraFormDate = document.createElement("input");
     extraFormDate.type = "hidden";
     extraFormDate.name = `form_set${index}-` + formCount + "-date";
@@ -109,12 +113,31 @@
     newCell = newRow.insertCell();
     newCell.appendChild(extraFormAction);
 
+    newCell = newRow.insertCell();
+    newCell.appendChild(extraFormDeleteCheckBox);
+
     newRow.appendChild(extraFormDate);
 
     newRow.appendChild(extraFormId);
 
     formCount += 1;
     totalManageElement.value = formCount
+  };
+
+  function deleteitinerary(checkbox, parentLoopCounter, loopCounter) {
+    console.log(parentLoopCounter. loopCounter)
+    if (checkbox.checked) {
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").value += " delete";
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").type = "hidden";
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-start_time").type = "hidden";
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-end_time").type = "hidden";
+    } else {
+      const actionText = document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").value;
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").value = actionText.replace(" delete", "");
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").type = "";
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-start_time").type = "time";
+      document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-end_time").type = "time";
+    }
   };
 </script>
 
