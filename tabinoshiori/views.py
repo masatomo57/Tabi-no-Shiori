@@ -96,7 +96,12 @@ def DeleteTripView(request):
     trip_list = get_list_or_404(Trip, username__username=user.username)
     
     if request.method=='POST':
-        pass
+        for trip in trip_list:
+            if f"is_delete{trip.id}" in request.POST:
+                trip.delete()
+        
+        return redirect('tabinoshiori:deletetrip')
+                
     elif request.method=='GET':
         context = {
             "trip_list": trip_list
