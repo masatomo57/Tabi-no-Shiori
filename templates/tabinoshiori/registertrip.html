@@ -7,14 +7,14 @@
     <div class='card mt-3 mb-3 bg-light'>
       <!-- カードヘッダー -->
       <div class='card-header bg-light text-dark'>
-        <h4>旅行を登録</h4>
+        <h4>たびを登録</h4>
       </div>
       <!-- カードボディー -->
       <div class='card-body'>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
-            <button type="submit">登録</button>
+            <button type="submit" class="btn btn-dark">登録</button>
         </form>
       </div>
     </div>

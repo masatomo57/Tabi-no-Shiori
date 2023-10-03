@@ -12,7 +12,7 @@
                         {% csrf_token %}
                         {{ form.as_p }}
                         <p><input type="hidden" name="next" value="{{ next }}"></p>
-                        <p><input type="submit" value="ログイン"></p>
+                        <p><input type="submit" class="btn btn-dark" value="ログイン"></p>
                     </form>
                 </div>
             </div>

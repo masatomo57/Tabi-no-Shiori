@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+<!-- コンテンツ -->
+{% block content %}
+<div class='container'>
+  <div class="col-md-6 offset-md-3">
+    <div class='card mt-3 mb-3 bg-light'>
+      <!-- カードヘッダー -->
+      <div class='card-header bg-light'>
+        <h4>たびを削除</h4>
+      </div>
+      <!-- カードボディー -->
+      <div class='card-body'>
+        <form method="POST">
+          <div>
+            {% csrf_token %}
+            <table id="form_table" class="table table-bordered">
+              <tr>
+                <th style="width: 70%">たび</th>
+                <th style="width: 30%">削除する？</th>
+              </tr>
+              {% for trip in trip_list %}
+              <tr>
+                <td>
+                  {{ trip.title }}
+                </td>
+                <td>
+                  <input type="checkbox" name="{{ trip.id }}">
+                </td>
+              </tr>
+              {% endfor %}
+            </table>
+          </div>
+          <div>
+            <button type="submit" class="btn btn-dark">削除</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
+
+{% block javascript %}{% endblock %}

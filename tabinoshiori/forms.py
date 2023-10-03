@@ -1,5 +1,5 @@
 from tabinoshiori.models import Trip, Itinerary
-from django.forms import ModelForm, DateInput, TimeInput, TextInput
+from django.forms import ModelForm, DateInput, TimeInput, TextInput, CheckboxInput
 
 class TripForm(ModelForm):
     class Meta:
@@ -8,6 +8,7 @@ class TripForm(ModelForm):
         widgets = {
             'start_date': DateInput(attrs={'type': 'date'}),
             'end_date': DateInput(attrs={'type': 'date'}),
+            'is_public': CheckboxInput(attrs={'type': 'hidden', 'initial': 'false'})
         } # inputのtypeを設定
 
 
@@ -19,7 +20,7 @@ class ItineraryForm(ModelForm):
             'date': DateInput(attrs={'required': True, 'type': 'date'}),
             'start_time': TimeInput(attrs={'required': True, 'type': 'time'}),
             'end_time': TimeInput(attrs={'required': True, 'type': 'time'}),
-            'action': TextInput(attrs={'required':True})
+            'action': TextInput(attrs={'required':True}),
         }
         labels = {
             'action': '',

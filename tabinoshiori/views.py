@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from tabinoshiori.models import Trip, Itinerary
 from tabinoshiori.forms import TripForm, ItineraryForm
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404, redirect, render
+from django.shortcuts import get_object_or_404, redirect, render, get_list_or_404
 from django.contrib.auth.decorators import login_required
 
 from datetime import timedelta
@@ -90,6 +90,19 @@ class MyRegisterItinerary(FormView, LoginRequiredMixin):
         return reverse('tabinoshiori:itinerary', kwargs={'pk': self.kwargs.get('pk')})
 '''
 
+@login_required
+def DeleteTripView(request):
+    user = request.user
+    trip_list = get_list_or_404(Trip, username__username=user.username)
+    
+    if request.method=='POST':
+        pass
+    elif request.method=='GET':
+        context = {
+            "trip_list": trip_list
+        }
+        return render(request, "tabinoshiori/deletetrip.html", context)
+
 
 @login_required
 def RegisterItineraryView(request, pk):
@@ -123,12 +136,17 @@ def RegisterItineraryView(request, pk):
             
             if form_set.is_valid():
                 valid_forms = form_set.save(commit=False)
-                for form in valid_forms:
+                for j, form in enumerate(valid_forms, start=1):
                     form.title =  trip
                     form.username = user
                     form.save()
+                    print(request.POST)
+                    if f'is_delete{i}{j}' in request.POST:
+                        print(i, j)
+                        Itinerary.objects.filter(form.id).delete()
             else:
                 pass
+            
         
         return redirect('tabinoshiori:itinerary', pk=pk)
         

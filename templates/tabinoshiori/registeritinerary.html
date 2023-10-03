@@ -18,10 +18,11 @@
             {% for form_set in form_sets %}
             <div>
               <h5 id="date{{ forloop.counter }}">{{ dates|slice:forloop.counter|last }}</h5>
-              <table id="form_table{{ forloop.counter }}" class="table table-bordered border-primary">
+              <table id="form_table{{ forloop.counter }}" class="table table-bordered">
                 <tr>
-                  <th>時間</th>
-                  <th>行動</th>
+                  <th style="width: 30%">時間</th>
+                  <th style="width: 60%">行動</th>
+                  <th style="width: 10%"></th>
                 </tr>
                 {% for form in form_set %}
                 <tr>
@@ -31,13 +32,16 @@
                   <td>
                     {{ form.action }}
                   </td>
+                  <td>
+                    <input type="checkbox" name="is_delete{{ forloop.parentloop.counter }}{{ forloop.counter }}" value="form_set{{ forloop.parentloop.counter }}-{{ forloop.counter }}-id">
+                  </td>
                   {{ form.date.as_hidden }}
                   {{ form.id }}
                 </tr>
                 {% endfor %}
               </table>
               <div>
-                <button type="button" data-index="{{ forloop.counter }}" name="add{{ forloop.counter }}" id="add{{ forloop.counter }}" onclick="add(event)"> + </button>
+                <button type="button" class="btn btn-dark" data-index="{{ forloop.counter }}" name="add{{ forloop.counter }}" id="add{{ forloop.counter }}" onclick="add(event)"> + </button>
               </div>
               {{ form_set.management_form }}
               <!--上のmanagement_formはformset使う時は絶対必要！-->
@@ -45,7 +49,7 @@
             {% endfor %}
           </div>
           <div>
-            <button type="submit">登録</button>
+            <button type="submit" class="btn btn-dark">登録</button>
           </div>
         </form>
       </div>
