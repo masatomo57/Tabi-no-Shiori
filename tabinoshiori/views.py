@@ -19,6 +19,7 @@ def HomeView(request):
     }
     return render(request, 'tabinoshiori/home.html', context)
 
+
 @login_required
 def ItineraryView(request, pk):
     user = request.user
@@ -41,6 +42,7 @@ def ItineraryView(request, pk):
     }
     return render(request, 'tabinoshiori/trip.html', context)
     
+
 class RegisterTripView(LoginRequiredMixin, CreateView):
     model = Trip
     form_class = TripForm
@@ -49,6 +51,7 @@ class RegisterTripView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.username = self.request.user
         return super().form_valid(form)
+
 
 @login_required
 def DeleteTripView(request):
@@ -95,14 +98,12 @@ def RegisterItineraryView(request, pk):
     if request.method=='POST':
         for i, date in enumerate(dates, start=1):
             form_set = ItineraryFormSet(request.POST, prefix=f"form_set{str(i)}")
-            print(form_set)
             if form_set.is_valid():
                 valid_forms = form_set.save(commit=False)
                 for form in valid_forms:
                     form.title =  trip
                     form.username = user
                     form.save()
-                    # TODO 消去の処理
             else:
                 pass
             
@@ -112,7 +113,8 @@ def RegisterItineraryView(request, pk):
                     delete_id = request.POST.get(f'form_set{i}-{j}-id')
                     if not delete_id is '':
                         get_object_or_404(Itinerary, pk=int(delete_id)).delete()
-                    
+                    else:
+                        get_object_or_404(Itinerary, username__username=user.username, title__title=title, action=request.POST.get(f'form_set{i}-{j}-action'), date=request.POST.get(f'form_set{i}-{j}-date'), start_time=request.POST.get(f'form_set{i}-{j}-start_time'), end_time=request.POST.get(f'form_set{i}-{j}-end_time')).delete()
             
         return redirect('tabinoshiori:itinerary', pk=pk)
         
