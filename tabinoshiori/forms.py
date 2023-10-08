@@ -1,5 +1,5 @@
 from tabinoshiori.models import Trip, Itinerary
-from django.forms import ModelForm, DateInput, TimeInput, TextInput, CheckboxInput
+from django.forms import ModelForm, DateInput, TimeInput, TextInput, CheckboxInput, BooleanField
 
 class TripForm(ModelForm):
     class Meta:
@@ -28,3 +28,7 @@ class ItineraryForm(ModelForm):
             'start_time': '',
             'end_time': '',
         }
+    is_delete = BooleanField(
+        widget=CheckboxInput(attrs={'type': 'checkbox', 'initial': 'false'}),
+        required=False,
+    )

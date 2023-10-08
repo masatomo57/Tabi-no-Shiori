@@ -33,7 +33,7 @@
                     {{ form.action }}
                   </td>
                   <td>
-                    <input type="checkbox" name="is_delete{{ forloop.parentloop.counter }}{{ forloop.counter }}" onchange="deleteitinerary(this, {{ forloop.parentloop.counter }}, {{ forloop.counter0 }})">
+                    {{ form.is_delete }}
                   </td>
                   {{ form.date.as_hidden }}
                   {{ form.id }}
@@ -71,12 +71,14 @@
 
     let extraFormStartTime = document.createElement("input");
     extraFormStartTime.type = "time";
+    extraFormStartTime.value = "00:00:00";
     extraFormStartTime.name = `form_set${index}-` + formCount + "-start_time";
     extraFormStartTime.id = `id_form_set${index}-` + formCount + "-start_time";
     extraFormStartTime.required = true;
 
     let extraFormEndTime = document.createElement("input");
     extraFormEndTime.type = "time";
+    extraFormEndTime.value = "00:00:00";
     extraFormEndTime.name = `form_set${index}-` + formCount + "-end_time";
     extraFormEndTime.id = `id_form_set${index}-` + formCount + "-end_time";
     extraFormEndTime.required = true;
@@ -84,14 +86,17 @@
 
     let extraFormAction = document.createElement("input");
     extraFormAction.type = "text";
+    extraFormAction.value = "";
     extraFormAction.name = `form_set${index}-` + formCount + "-action";
     extraFormAction.id = `id_form_set${index}-` + formCount + "-action";
     extraFormAction.required = true;
 
     let extraFormDeleteCheckBox = document.createElement("input");
     extraFormDeleteCheckBox.type = "checkbox";
-    extraFormDeleteCheckBox.name = `is_delete${index}` + formCount;
-
+    extraFormDeleteCheckBox.name = `form_set${index}-${formCount}-is_delete`;
+    /*
+    extraFormDeleteCheckBox.onchange = deleteitinerary(this, index, formCount);
+    */
     let extraFormDate = document.createElement("input");
     extraFormDate.type = "hidden";
     extraFormDate.name = `form_set${index}-` + formCount + "-date";
@@ -125,7 +130,6 @@
   };
 
   function deleteitinerary(checkbox, parentLoopCounter, loopCounter) {
-    console.log(parentLoopCounter. loopCounter)
     if (checkbox.checked) {
       document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").value += " delete";
       document.getElementById(`id_form_set${parentLoopCounter}-` + loopCounter + "-action").type = "hidden";
